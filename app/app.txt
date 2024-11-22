@@ -1,0 +1,17 @@
+  app.c (app.h)
+   Endless loops, which execute tasks with fixed computing time. This 
+   sequential execution is only deviated from when an interrupt event occurs.
+
+...
+
+•estructura task_cfg_t tengo: puntero para inicializar la tarea, puntero para actualizar la tarea 
+y un puntero a los parámetros
+
+•estructura task_dta_t tengo: WCET para ver cuanto tarda en realizar cada tarea
+
+•la función app_init() me inicializa la lista "task_cfg_t task_cfg_list[]" con sus parámetros y WCET, a partir
+de un puntero a la función taskinit del código task_sensor y task_menu
+
+•la función app_update() que se ejecuta cíclico por la constante global (chequea si hay actualizaciones)
+y corre las funciones task_sensor_update y task_menu_update
+	
