@@ -90,7 +90,7 @@ typedef struct{
     bool displayPinD5;
     bool displayPinD6;
     bool displayPinD7;
-} pcf8574_t;
+} pcf8574_t;				//Struct for my display configuration (the ones from thailand)
 
 static display_t display;
 static pcf8574_t pcf8574;
@@ -149,6 +149,14 @@ void displayInit( displayConnection_t connection )
         break;
 
         case DISPLAY_CONNECTION_GPIO_4BITS:
+        	displayCodeWrite( DISPLAY_RS_INSTRUCTION,
+        					  DISPLAY_IR_FUNCTION_SET |
+							  DISPLAY_IR_FUNCTION_SET_4BITS |
+							  DISPLAY_IR_FUNCTION_SET_2LINES |
+							  DISPLAY_IR_FUNCTION_SET_5x8DOTS );
+        	HAL_Delay(1);
+        break;
+
         case DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_FUNCTION_SET |

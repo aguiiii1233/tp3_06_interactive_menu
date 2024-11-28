@@ -2,3 +2,6 @@
    Non-Blocking Code -> Display Code Library
 
 ...
+
+Cambiamos en DisplayInit agregar el caso de 4Bits, teniendo en cuenta el código
+escrito arriba para 8bits.

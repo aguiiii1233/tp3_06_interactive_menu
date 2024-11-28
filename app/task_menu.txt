@@ -5,3 +5,15 @@
    Non-Blocking Code
 
 ...
+
+Agregamos la transición de los estados del menú, a partir de los sensores definidos (los 4 botones)
+y con la estructura agregada para guardar los parámetros. 
+La aplicación es similar a las del segundo trabajo práctico, donde cada estado es un case del switch, y tenemos
+un if dentro del case por cada evento que levanta un estado.
+
+La estructura tiene las variables que definen al motor
+	•uint32_t		motor_id;
+	•uint32_t		submenu;
+	•bool			power;
+	•uint32_t		speed;
+	•bool			spin; 
