@@ -57,7 +57,7 @@
 
 #define DEL_MEN_XX_MIN				0ul
 #define DEL_MEN_XX_MED				50ul
-#define DEL_MEN_XX_MAX				500ul
+#define DEL_MEN_XX_MAX				50ul
 
 #define MOTOR_ID_MAX				2ul
 #define SUBMENU_ID_MAX				3ul
@@ -97,7 +97,7 @@ void task_menu_init(void *parameters)
 	task_menu_ev_t	event;
 	bool b_event;
 
-	/* Print out: Task Initialized */
+		/* Print out: Task Initialized */
 	LOGGER_LOG("  %s is running - %s\r\n", GET_NAME(task_menu_init), p_task_menu);
 	LOGGER_LOG("  %s is a %s\r\n", GET_NAME(task_menu), p_task_menu_);
 
@@ -127,7 +127,7 @@ void task_menu_init(void *parameters)
 	displayStringWrite("Motor_main_1");
 
 	displayCharPositionWrite(0, 1);
-	displayStringWrite("Motor_main_1");
+	displayStringWrite("Motor_main_2");
 
 	HAL_GPIO_WritePin(LED_A_PORT, LED_A_PIN, LED_A_ON);
 
@@ -141,8 +141,8 @@ void task_menu_update(void *parameters)
 	task_menu_parameters_t *p_task_menu_parameters;
 	bool b_time_update_required = false;
 	uint32_t index;
-	char menu_str1[18];
-	char menu_str2[18];
+	//char menu_str1[18];
+	//char menu_str2[18];
 
 	p_task_menu_parameters = task_menu_parameters_list;
 
@@ -201,23 +201,22 @@ void task_menu_update(void *parameters)
 			{
 				case ST_MEN_MAIN:
 
-/*					snprintf(menu_str, sizeof(menu_str), "%lu", (g_task_menu_cnt/1000ul));
-					displayCharPositionWrite(0, 0);
-					displayStringWrite("Motor");
-					displayCharPositionWrite(6, 0);
-					displayStringWrite("Motor");
-*/
+
 
 					if ((true == p_task_menu_dta->flag) && (EV_MEN_MEN_ACTIVE == p_task_menu_dta->event))
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_01_ACTIVE;
 
-						memcpy(menu_str1, "Enter/Next/Escape", sizeof("Enter/Next/Escape"));
-						memcpy(menu_str2, "Motor 1", sizeof("Motor 1"));
+						displayCharPositionWrite(0, 0);
+						displayStringWrite("Enter/Next/Escape");
+
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Motor 1        ");
 
 
 					}
+
 
 					break;
 
@@ -231,28 +230,39 @@ void task_menu_update(void *parameters)
 						if (index == MOTOR_ID_MAX){
 						//p_task_menu_dta->state = ST_MEN_01_ACTIVE;
 							index = 0;
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Motor 1        ");
 						}
 						else{
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Motor 2        ");
 							index++;
 						}
 						p_task_menu_parameters = &task_menu_parameters_list[index];
-						memcpy(menu_str2,"Motor ", sizeof("Motor "));
-						snprintf(menu_str2 + strlen(menu_str2), sizeof(menu_str2) - strlen(menu_str2), "%lu", p_task_menu_parameters->motor_id);
+
+
 
 					}
 					else if ((true == p_task_menu_dta->flag) && (EV_MEN_ENT_ACTIVE == p_task_menu_dta->event))
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_02_ACTIVE;
-						memcpy(menu_str2,"Power", sizeof("Power"));
+
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Power        ");
 
 					}
 					else if ((true == p_task_menu_dta->flag) && (EV_MEN_ESC_ACTIVE == p_task_menu_dta->event))
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_MAIN;
-						memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
-						memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+
+
+						displayCharPositionWrite(0, 0);
+						displayStringWrite("Motor_main_1          ");
+
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Motor_main_2          ");
 
 					}
 
@@ -267,16 +277,22 @@ void task_menu_update(void *parameters)
 						if (p_task_menu_parameters->submenu == 1){
 						//p_task_menu_dta->state = ST_MEN_01_ACTIVE;
 							p_task_menu_parameters->submenu = 2;
-							memcpy(menu_str2,"Speed", sizeof("Speed"));
+							//memcpy(menu_str2,"Speed", sizeof("Speed"));
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Speed        ");
 
 						}
 						else if (p_task_menu_parameters->submenu == 2){
 							p_task_menu_parameters->submenu = 3;
-							memcpy(menu_str2,"Spin", sizeof("Spin"));
+							//memcpy(menu_str2,"Spin", sizeof("Spin"));
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Spin        ");
 						}
-						else if (p_task_menu_parameters->submenu == 2){
+						else if (p_task_menu_parameters->submenu == 3){
 							p_task_menu_parameters->submenu = 1;
-							memcpy(menu_str2,"Power", sizeof("Power"));
+							//memcpy(menu_str2,"Power", sizeof("Power"));
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Power        ");
 						}
 					}
 					else if ((true == p_task_menu_dta->flag) && (EV_MEN_ENT_ACTIVE == p_task_menu_dta->event))
@@ -285,15 +301,21 @@ void task_menu_update(void *parameters)
 						switch (p_task_menu_parameters->submenu){
 							case 1:
 								p_task_menu_dta->state = ST_MEN_03_POWER;
-								memcpy(menu_str2,"ON", sizeof("ON"));
+								//memcpy(menu_str2,"ON", sizeof("ON"));
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("ON        ");
 								break;
 							case 2:
 								p_task_menu_dta->state = ST_MEN_03_SPEED;
-								memcpy(menu_str2,"0", sizeof("0"));
+								//memcpy(menu_str2,"0", sizeof("0"));
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("0          ");
 								break;
 							case 3:
 								p_task_menu_dta->state = ST_MEN_03_SPIN;
-								memcpy(menu_str2,"L", sizeof("L"));
+								//memcpy(menu_str2,"L", sizeof("L"));
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("LEFT          ");
 								break;
 							default:
 								break;
@@ -304,7 +326,9 @@ void task_menu_update(void *parameters)
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_01_ACTIVE;
-						memcpy(menu_str2,"Motor 1", sizeof("Motor 1"));
+						//memcpy(menu_str2,"Motor 1", sizeof("Motor 1"));
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Motor 1       ");
 					}
 					break;
 
@@ -315,25 +339,37 @@ void task_menu_update(void *parameters)
 						p_task_menu_dta->flag = false;
 						if (p_task_menu_parameters->power == false){
 							p_task_menu_parameters->power = true;
-							memcpy(menu_str2,"ON", sizeof("ON"));
+							//memcpy(menu_str2,"ON", sizeof("ON"));
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("ON       ");
 						}
 						else{
 							p_task_menu_parameters->power = false;
-							memcpy(menu_str2,"OFF", sizeof("OFF"));
+							//memcpy(menu_str2,"OFF", sizeof("OFF"));
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("OFF        ");
 						}
 					}
 					else if ((true == p_task_menu_dta->flag) && (EV_MEN_ENT_ACTIVE == p_task_menu_dta->event))
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_MAIN;
-						memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
-						memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+						//memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
+						//memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+
+						displayCharPositionWrite(0, 0);
+						displayStringWrite("Motor_main_1          ");
+
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Motor_main_2     ");
 					}
 					else if ((true == p_task_menu_dta->flag) && (EV_MEN_ESC_ACTIVE == p_task_menu_dta->event))
 					{
 						p_task_menu_dta->flag = false;
 						p_task_menu_dta->state = ST_MEN_02_ACTIVE;
-						memcpy(menu_str2,"Power", sizeof("Power"));
+						//memcpy(menu_str2,"Power", sizeof("Power"));
+						displayCharPositionWrite(0, 1);
+						displayStringWrite("Power           ");
 					}
 					break;
 
@@ -342,31 +378,39 @@ void task_menu_update(void *parameters)
 
 						if ((true == p_task_menu_dta->flag) && (EV_MEN_NEX_ACTIVE == p_task_menu_dta->event))
 						{
-							memcpy(menu_str2,"", sizeof(""));
-							p_task_menu_dta->flag = false;
+							//memcpy(menu_str2,"", sizeof(""));
+							//p_task_menu_dta->flag = false;
 							if (p_task_menu_parameters->speed == SPEED_ID_MAX){
 								p_task_menu_parameters->speed = 0;
-								snprintf(menu_str2 + strlen(menu_str2), sizeof(menu_str2) - strlen(menu_str2), "%lu", p_task_menu_parameters->speed);
-
+								//snprintf(menu_str2 + strlen(menu_str2), sizeof(menu_str2) - strlen(menu_str2), "%lu", p_task_menu_parameters->speed);
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("0     ");
 							}
 							else{
 								p_task_menu_parameters->speed++;
-								snprintf(menu_str2 + strlen(menu_str2), sizeof(menu_str2) - strlen(menu_str2), "%lu", p_task_menu_parameters->speed);
-
+								char speed[5] = "";
+								snprintf(speed + strlen(speed), sizeof(speed) - strlen(speed), "%lu", p_task_menu_parameters->speed);
+								displayCharPositionWrite(0, 1);
+								displayStringWrite(speed);
 							}
 						}
 						else if ((true == p_task_menu_dta->flag) && (EV_MEN_ENT_ACTIVE == p_task_menu_dta->event))
 						{
 							p_task_menu_dta->flag = false;
 							p_task_menu_dta->state = ST_MEN_MAIN;
-							memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
-							memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+							displayCharPositionWrite(0, 0);
+							displayStringWrite("Motor_main_1     ");
+
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Motor_main_2     ");
 						}
 						else if ((true == p_task_menu_dta->flag) && (EV_MEN_ESC_ACTIVE == p_task_menu_dta->event))
 						{
 							p_task_menu_dta->flag = false;
 							p_task_menu_dta->state = ST_MEN_02_ACTIVE;
-							memcpy(menu_str2,"Speed", sizeof("Speed"));
+
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Speed     ");
 						}
 						break;
 
@@ -377,25 +421,39 @@ void task_menu_update(void *parameters)
 							p_task_menu_dta->flag = false;
 							if (p_task_menu_parameters->spin == false){
 								p_task_menu_parameters->spin = true;
-								memcpy(menu_str2,"Right", sizeof("Right"));
+								//memcpy(menu_str2,"Right", sizeof("Right"));
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("RIGHT     ");
 							}
 							else{
 								p_task_menu_parameters->spin = false;
-								memcpy(menu_str2,"Left", sizeof("Left"));
+								//memcpy(menu_str2,"Left", sizeof("Left"));
+
+								displayCharPositionWrite(0, 1);
+								displayStringWrite("LEFT     ");
 							}
 						}
 						else if ((true == p_task_menu_dta->flag) && (EV_MEN_ENT_ACTIVE == p_task_menu_dta->event))
 						{
 							p_task_menu_dta->flag = false;
 							p_task_menu_dta->state = ST_MEN_MAIN;
-							memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
-							memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+							//memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
+							//memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+
+							displayCharPositionWrite(0, 0);
+							displayStringWrite("Motor_main_1     ");
+
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Motor_main_2     ");
 						}
 						else if ((true == p_task_menu_dta->flag) && (EV_MEN_ESC_ACTIVE == p_task_menu_dta->event))
 						{
 							p_task_menu_dta->flag = false;
 							p_task_menu_dta->state = ST_MEN_02_ACTIVE;
-							memcpy(menu_str2,"Spin", sizeof("Spin"));
+							//memcpy(menu_str2,"Spin", sizeof("Spin"));
+
+							displayCharPositionWrite(0, 1);
+							displayStringWrite("Spin     ");
 						}
 						break;
 				default:
@@ -404,16 +462,16 @@ void task_menu_update(void *parameters)
 					p_task_menu_dta->state = ST_MEN_MAIN;
 					p_task_menu_dta->event = EV_MEN_MEN_IDLE;
 					p_task_menu_dta->flag  = false;
-					memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
-					memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
+					//memcpy(menu_str1,"Motor_main_1", sizeof("Motor_main_1"));
+					//memcpy(menu_str2,"Motor_main_2", sizeof("Motor_main_2"));
 
 					break;
 			}
 
-			displayCharPositionWrite(0, 0);
-			displayStringWrite(menu_str1);
-			displayCharPositionWrite(0, 1);
-			displayStringWrite(menu_str1);
+			//displayCharPositionWrite(0, 0);
+			//displayStringWrite(menu_str1);
+			//displayCharPositionWrite(0, 1);
+			//displayStringWrite(menu_str1);
 		}
 	}
 }

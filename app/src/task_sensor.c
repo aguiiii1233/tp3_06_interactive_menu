@@ -56,18 +56,18 @@
 #define G_TASK_SEN_TICK_CNT_INI		0ul
 
 #define DEL_BTN_XX_MIN				0ul
-#define DEL_BTN_XX_MED				25ul
+#define DEL_BTN_XX_MED				1ul
 #define DEL_BTN_XX_MAX				50ul
 
 /********************** internal data declaration ****************************/
 const task_sensor_cfg_t task_sensor_cfg_list[] = {
-	{ID_BTN_MEN,  D2_GPIO_Port,  D2_Pin,  BTN_MEN_PRESSED, DEL_BTN_XX_MAX,
+	{ID_BTN_MEN,  BTN_MEN_PORT,  BTN_MEN_PIN,  BTN_MEN_PRESSED, DEL_BTN_XX_MED,
 	 EV_MEN_MEN_IDLE,  EV_MEN_MEN_ACTIVE}, 	//D2
-	{ID_BTN_ENT,  D4_GPIO_Port,  D4_Pin,  BTN_ENT_PRESSED, DEL_BTN_XX_MAX,
+	{ID_BTN_ENT,  BTN_ENT_PORT,  BTN_ENT_PIN,  BTN_ENT_PRESSED, DEL_BTN_XX_MED,
 	 EV_MEN_ENT_IDLE,  EV_MEN_ENT_ACTIVE}, 	//D4
-	{ID_BTN_NEX,  D5_GPIO_Port,  D5_Pin,  BTN_NEX_PRESSED, DEL_BTN_XX_MAX,
+	{ID_BTN_NEX,  BTN_NEX_PORT,  BTN_NEX_PIN,  BTN_NEX_PRESSED, DEL_BTN_XX_MED,
 	 EV_MEN_NEX_IDLE,  EV_MEN_NEX_ACTIVE}, 	//D5
-	{ID_BTN_ESC,  D6_GPIO_Port,  D6_Pin,  BTN_ESC_PRESSED, DEL_BTN_XX_MAX,
+	{ID_BTN_ESC,  BTN_ESC_PORT,  BTN_ESC_PIN,  BTN_ESC_PRESSED, DEL_BTN_XX_MED,
 	 EV_MEN_ESC_IDLE,  EV_MEN_ESC_ACTIVE} 	//D6
 };
 
@@ -182,7 +182,7 @@ void task_sensor_update(void *parameters)
 					if (EV_BTN_XX_DOWN == p_task_sensor_dta->event)
 					{
 						p_task_sensor_dta->state = ST_BTN_XX_FALLING;
-						p_task_sensor_dta->tick = p_task_sensor_cfg->tick_max;
+						p_task_sensor_dta->tick = DEL_BTN_XX_MED;
 					}
 
 					break;
@@ -190,6 +190,7 @@ void task_sensor_update(void *parameters)
 				case ST_BTN_XX_FALLING:
 
 					p_task_sensor_dta->tick--;
+					LOGGER_LOG("  task_sensor_tick = %lu \n",p_task_sensor_dta->tick);
 					if (DEL_BTN_XX_MIN == p_task_sensor_dta->tick)
 					{
 						if (EV_BTN_XX_DOWN == p_task_sensor_dta->event)
@@ -209,7 +210,7 @@ void task_sensor_update(void *parameters)
 
 					if (EV_BTN_XX_UP == p_task_sensor_dta->event)
 					{
-						p_task_sensor_dta->tick = p_task_sensor_cfg->tick_max;
+						p_task_sensor_dta->tick = DEL_BTN_XX_MED;
 						p_task_sensor_dta->state = ST_BTN_XX_RISING;
 					}
 

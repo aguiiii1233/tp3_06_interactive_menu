@@ -52,8 +52,8 @@
 #define DISPLAY_20x4_LINE3_FIRST_CHARACTER_ADDRESS 20
 #define DISPLAY_20x4_LINE4_FIRST_CHARACTER_ADDRESS 84
 
-#define DISPLAY_RS_INSTRUCTION 0
-#define DISPLAY_RS_DATA        1
+#define DISPLAY_RS_INSTRUCTION 0	//Control bit
+#define DISPLAY_RS_DATA        1	//Data bit
 
 #define DISPLAY_RW_WRITE 0
 #define DISPLAY_RW_READ  1
@@ -90,7 +90,7 @@ typedef struct{
     bool displayPinD5;
     bool displayPinD6;
     bool displayPinD7;
-} pcf8574_t;				//Struct for my display configuration (the ones from thailand)
+} pcf8574_t;
 
 static display_t display;
 static pcf8574_t pcf8574;
@@ -112,17 +112,19 @@ void displayInit( displayConnection_t connection )
 
     if( display.connection == DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER) {
         pcf8574.address = PCF8574_I2C_BUS_8BIT_WRITE_ADDRESS ;
-        pcf8574.data = 0b00000000;
+        pcf8574.data = 0b00000000; //Start data 0 to avoid no defined states
+
         /*Definido en el .ioc*/
         //i2cPcf8574.frequency(100000);
 
-        displayPinWrite( DISPLAY_PIN_A_PCF8574,  ON );
+        displayPinWrite( DISPLAY_PIN_A_PCF8574,  ON ); //turns on retro-lighting with an expansor
     }
 
-    initial8BitCommunicationIsCompleted = false;
+    initial8BitCommunicationIsCompleted = false; //transition to 4-bit mode not completed.
 
     HAL_Delay(50);
 
+    //Repeats command to ensure display properly understands the configuration. Delays for timing needs. Protocol start, even if we use 4BIT
     displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                       DISPLAY_IR_FUNCTION_SET |
                       DISPLAY_IR_FUNCTION_SET_8BITS );
@@ -138,25 +140,19 @@ void displayInit( displayConnection_t connection )
                       DISPLAY_IR_FUNCTION_SET_8BITS );
     HAL_Delay(1);
 
+
+
     switch( display.connection ) {
         case DISPLAY_CONNECTION_GPIO_8BITS:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_FUNCTION_SET |
                               DISPLAY_IR_FUNCTION_SET_8BITS |
                               DISPLAY_IR_FUNCTION_SET_2LINES |
-                              DISPLAY_IR_FUNCTION_SET_5x8DOTS );
+                              DISPLAY_IR_FUNCTION_SET_5x8DOTS ); //5x8 matrix for each character
             HAL_Delay(1);
         break;
 
         case DISPLAY_CONNECTION_GPIO_4BITS:
-        	displayCodeWrite( DISPLAY_RS_INSTRUCTION,
-        					  DISPLAY_IR_FUNCTION_SET |
-							  DISPLAY_IR_FUNCTION_SET_4BITS |
-							  DISPLAY_IR_FUNCTION_SET_2LINES |
-							  DISPLAY_IR_FUNCTION_SET_5x8DOTS );
-        	HAL_Delay(1);
-        break;
-
         case DISPLAY_CONNECTION_I2C_PCF8574_IO_EXPANDER:
             displayCodeWrite( DISPLAY_RS_INSTRUCTION,
                               DISPLAY_IR_FUNCTION_SET |
